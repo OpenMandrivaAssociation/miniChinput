@@ -27,7 +27,7 @@ Patch6: miniChinput-0.1.9-oem_CN.patch.bz2
 
 Patch7:	minichinput-fix-compile.patch.bz2
 
-BuildRequires: imlib-devel XFree86-devel fontconfig
+BuildRequires: imlib-devel X11-devel fontconfig
 Prefix: %{_prefix}
 Buildroot: %_tmppath/%name-%version-%release-root
 Conflicts: Chinput
