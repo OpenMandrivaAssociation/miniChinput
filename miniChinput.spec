@@ -63,6 +63,7 @@ install -m644 src/icons/chinput.xpm %buildroot/%_iconsdir
 
 install -d %buildroot/%_sysconfdir/chinese
 ln -s /usr/lib/Chinput/Chinput.ad %buildroot/%_sysconfdir/chinese/Chinput.ad
+rm -fr %buildroot/%_docdir/%name-%version
 
 %post
 # gbrxvt will use the chinput as the input server for GB2312 users.
