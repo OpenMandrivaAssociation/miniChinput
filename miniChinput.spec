@@ -29,6 +29,7 @@ Patch7:	minichinput-fix-compile.patch.bz2
 
 BuildRequires: imlib-devel X11-devel fontconfig
 Prefix: %{_prefix}
+Buildroot: %_tmppath/%name-%version-%release-root
 Conflicts: Chinput
 Obsoletes: Chinput
 
