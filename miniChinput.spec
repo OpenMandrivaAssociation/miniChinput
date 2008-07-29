@@ -1,6 +1,6 @@
 %define name miniChinput
 %define ver 0.1.9
-%define release %mkrel 4
+%define release %mkrel 6
 
 # to define when building for PRC
 #%define build_for_PRC 1
