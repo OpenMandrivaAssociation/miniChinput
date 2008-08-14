@@ -2,8 +2,6 @@
 %define ver 0.1.9
 %define release %mkrel 6
 
-# to define when building for PRC
-#%define build_for_PRC 1
 
 Summary: A X Input Method Server for Chinese
 Name: %{name}
@@ -18,14 +16,14 @@ Source: %{name}-0.1.9.tar.gz
 Patch0: %{name}-0.1.9-rxvt.patch
 # allow spaces invalue fields of config file (a lot of fonts have
 # spaces in their names) -- pablo
-Patch4: miniChinput-0.1.9-spaces.patch.bz2
+Patch4: miniChinput-0.1.9-spaces.patch
 # patch to make Chinput work in all Chinese locales (that is, also
 # with 'zh_HK' and 'zh_SG' -- pablo
-Patch5: miniChinput-0.1.9-zh_locales.patch.bz2
+Patch5: miniChinput-0.1.9-zh_locales.patch
 # patch to comply with Chinese policy requirements about -- pablo
-Patch6: miniChinput-0.1.9-oem_CN.patch.bz2
+Patch6: miniChinput-0.1.9-oem_CN.patch
 
-Patch7:	minichinput-fix-compile.patch.bz2
+Patch7:	minichinput-fix-compile.patch
 
 BuildRequires: imlib-devel X11-devel fontconfig
 Prefix: %{_prefix}
@@ -44,9 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %patch0 -p1 -b .rxvt
 %patch4 -p1 -b .spaces
 %patch5 -p1 -b .zh_locales
-%if %build_for_PRC
 %patch6 -p0
-%endif
 
 %patch7 -p1 -b .fix_gcc_3_4_compile
 
