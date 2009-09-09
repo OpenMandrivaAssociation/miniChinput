@@ -1,6 +1,6 @@
 %define name miniChinput
 %define ver 0.1.9
-%define release %mkrel 6
+%define release %mkrel 7
 
 
 Summary: A X Input Method Server for Chinese
