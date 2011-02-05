@@ -24,9 +24,12 @@ Patch5: miniChinput-0.1.9-zh_locales.patch
 Patch6: miniChinput-0.1.9-oem_CN.patch
 
 Patch7:	minichinput-fix-compile.patch
-
-BuildRequires: imlib-devel X11-devel fontconfig
-Prefix: %{_prefix}
+Patch8: miniChinput-0.1.9-gcc45.patch
+Patch9: miniChinput-0.1.9-link.patch
+BuildRequires: imlib-devel
+BuildRequires: libx11-devel
+BuildRequires: libxft-devel
+BuildRequires: libxt-devel
 Buildroot: %_tmppath/%name-%version-%release-root
 Conflicts: Chinput
 Obsoletes: Chinput
@@ -36,8 +39,6 @@ Chinput is an X Input Method allowing to type in chinese in X applications
 that follow the XIM input method standard.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 %patch0 -p1 -b .rxvt
 %patch4 -p1 -b .spaces
@@ -45,13 +46,16 @@ rm -rf $RPM_BUILD_ROOT
 %patch6 -p0
 
 %patch7 -p1 -b .fix_gcc_3_4_compile
+%patch8 -p0
+%patch9 -p0
 
 %build
-%configure
-make
+%configure2_5x
+make CC="gcc %ldflags"
 make data
 
 %install
+rm -fr %buildroot
 make prefix=$RPM_BUILD_ROOT/usr install
 make prefix=$RPM_BUILD_ROOT/usr data-install
 
