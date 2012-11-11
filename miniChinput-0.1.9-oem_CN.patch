@@ -1,0 +1,30 @@
+--- ImmModules/cce/inputs/nqwb.cin_old	2003-09-03 13:01:20.000000000 +0200
++++ ImmModules/cce/inputs/nqwb.cin	2003-09-03 13:02:11.000000000 +0200
+@@ -27119,7 +27119,6 @@
+ kwmq	只见
+ kwn	喉
+ kwnd	喉
+-kwnl	中华民国
+ kwnr	只怕
+ kwny	唯心
+ kwny	中华民族
+--- ImmModules/cce/inputs/sysphrase.txt_old	2003-09-03 13:01:40.000000000 +0200
++++ ImmModules/cce/inputs/sysphrase.txt	2003-09-03 13:02:43.000000000 +0200
+@@ -53803,7 +53803,6 @@
+ 中和	zhong he 122
+ 纵横驰骤	zhong heng chi zhou 1
+ 忠厚	zhong hou 98
+-中华民国	zhong hua min guo 0
+ 中华民族	zhong hua min zu 70
+ 中华人民共和国	zhong hua ren min gong he guo 76
+ 中华书局	zhong hua shu ju 11
+--- ImmModules/turbo/sort.word.count_old	2003-09-03 13:05:02.000000000 +0200
++++ ImmModules/turbo/sort.word.count	2003-09-03 13:05:15.000000000 +0200
+@@ -24386,7 +24386,6 @@
+ 593 醒目
+ 593 音讯
+ 593 政协
+-593 中华民国
+ 593 纵容
+ 593 作案
+ 593 辎重

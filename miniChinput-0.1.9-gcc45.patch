@@ -1,0 +1,22 @@
+--- src/server/TLS_ImmOp.cpp.gcc	2011-02-05 11:37:46.000000000 +0100
++++ src/server/TLS_ImmOp.cpp	2011-02-05 11:38:02.000000000 +0100
+@@ -23,7 +23,7 @@
+  * Author: see CREDITS
+  */
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <stdio.h>
+ #include <string.h>
+ #include <dlfcn.h>
+--- src/server/TLS_LibMain.cpp.gcc	2011-02-05 11:38:27.000000000 +0100
++++ src/server/TLS_LibMain.cpp	2011-02-05 11:38:45.000000000 +0100
+@@ -28,7 +28,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <sys/types.h>
+-#include <iostream.h>
++#include <iostream>
+ //#include <pth.h>
+ 
+ #include <TLS_HzInput.hpp>

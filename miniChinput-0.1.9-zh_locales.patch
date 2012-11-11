@@ -1,0 +1,111 @@
+--- miniChinput-0.1.9/resource/Chinput.ad.in_old	2003-09-03 16:12:05.000000000 +0200
++++ miniChinput-0.1.9/resource/Chinput.ad.in	2003-09-03 16:20:06.000000000 +0200
+@@ -67,8 +67,8 @@
+ !
+ chinput.font			=	8x16
+ chinput.gbfont                  =       -*-*-*-*-*--16-*-*-*-*-*-gb2312.1980-0
+-chinput.gbkfont                  =      -misc-zysong18030-medium-r-normal--16-0-0-0-c-0-gbk-0
+-chinput.gb18030font             =       -misc-zysong18030-medium-r-normal--16-0-0-0-c-0-iso10646-1
++chinput.gbkfont                  =      -*-*-*-*-*--16-*-*-*-*-*-gbk-0
++chinput.gb18030font             =       -misc-fixed-medium-r-normal-ja-18-120-100-100-c-180-iso10646-1
+ chinput.big5font		=       -*-*-medium-r-normal--16-160-75-75-c-160-big5-0
+ !
+ !
+@@ -88,8 +88,8 @@
+ 
+ 
+ xft.on                  =       YES
+-xft.font.family         =       zysong18030
+-xft.font.size           =       11
++xft.font.family         =       Sans
++xft.font.size           =       12
+ xft.anti-aliasing       =       YES
+ 
+ !
+--- miniChinput-0.1.9/src/XIM.h_old	2003-09-03 16:21:54.000000000 +0200
++++ miniChinput-0.1.9/src/XIM.h	2003-09-03 16:22:42.000000000 +0200
+@@ -29,5 +29,5 @@
+ //#define LOCALE_BIG5	"zh_TW.Big5"
+ 
+ //This input server support CJK by default
+-#define IMLOCALE	"zh_CN,zh_TW,ja_JP,ko_KR"
++#define IMLOCALE	"zh_CN,zh_SG,zh_HK,zh_TW,ja_JP,ko_KR"
+ 
+--- miniChinput-0.1.9/src/init.c_old	2003-09-03 16:22:00.000000000 +0200
++++ miniChinput-0.1.9/src/init.c	2003-09-03 16:45:20.000000000 +0200
+@@ -89,7 +89,7 @@
+ 
+ 
+         load_font(&font_info, font_latin);
+-	if(strstr(deflocale,"zh_CN")){
++	if(strstr(deflocale,"zh_CN")||strstr(deflocale,"zh_SG")){
+ 		if(strstr(deflocale,"2312") || strstr(deflocale,"EUC")) 
+         		load_font(&hzgbfont_info, font_gb);  
+ 		else if(strstr(deflocale,"gbk")||strstr(deflocale,"GBK")) 
+@@ -100,7 +100,8 @@
+ 			load_font(&hzgbfont_info, font_gb);
+ 
+ 		setlocale(LC_ALL, gblocale);
+-		sprintf(fontname, "%s,%s,%s,%s", font_latin, font_gb, font_gbk, font_gb18030);
++		//sprintf(fontname, "%s,%s,%s,%s", font_latin, font_gb, font_gbk, font_gb18030);
++		sprintf(fontname, "%s,%s,%s,%s", font_latin, font_gb18030, font_gbk, font_gb);
+         	if((fontset_gb = XCreateFontSet(display, fontname, &missing_list,
+                 	&missing_count, &def_string)) == NULL) {
+                 	fprintf(stderr, "Error : XCreateFontSet() !\n");
+@@ -111,7 +112,7 @@
+                 	(fontset_gb, &font_struct_list_return,&font_name_list_return);
+ 
+ 	}
+-	if(strstr(deflocale,"zh_TW"))
++	if(strstr(deflocale,"zh_TW")||strstr(deflocale,"zh_HK"))
+ 	{
+         	load_font(&hzbig5font_info, font_big5);
+ 		setlocale(LC_ALL, big5locale);
+@@ -152,7 +153,7 @@
+         Status retval;
+         int j;
+ 
+-        if(strstr(deflocale,"zh_CN")){
++        if(strstr(deflocale,"zh_CN")||strstr(deflocale,"zh_SG")){
+ 		//create font set
+                 if(strstr(deflocale,"2312") || strstr(deflocale,"EUC")){
+ 			get_FontGC(window1,  &offspot_gbgc, hzgbfont_info, "#FFFF00");
+@@ -166,7 +167,7 @@
+ 			get_FontGC(window1,  &offspot_gbgc, hzgbfont_info, "#FFFF00");
+ 		}
+         }
+-        if(strstr(deflocale,"zh_TW")) {
++        if(strstr(deflocale,"zh_TW")||strstr(deflocale,"zh_HK")) {
+ 		get_FontGC(window1,  &offspot_big5gc, hzbig5font_info, "#FFFF00");
+ 	}
+ 
+@@ -386,9 +387,9 @@
+ 	}/*if*/
+ 
+ 	if (ow_encoding == 0) {
+-		if (strstr(deflocale,"zh_CN"))
++		if (strstr(deflocale,"zh_CN")||strstr(deflocale,"zh_SG"))
+ 			strcpy(gblocale, deflocale);
+-		if (strstr(deflocale,"zh_TW"))
++		if (strstr(deflocale,"zh_TW")||strstr(deflocale,"zh_HK"))
+ 			strcpy(big5locale, deflocale);
+ 	}
+ }
+@@ -431,7 +432,7 @@
+ 
+ 	strcpy(deflocale, getenv("LANG"));
+ 
+-	if(getenv("LANG") && strstr(getenv("LANG"), "zh_TW")){
++	if(getenv("LANG") && (strstr(getenv("LANG"), "zh_TW")||strstr(getenv("LANG"), "zh_HK"))){
+ 		//strcpy(deflocale, big5locale);
+ 		//strcpy(imlocale,  "zh_TW");
+ 		flag_encoding = HZSERVER_ENCODING_BIG5;
+@@ -678,7 +679,7 @@
+ 	}
+ 	fclose(fp);
+ 
+-	if(getenv("LANG") && strstr(getenv("LANG"), "zh_TW"))
++	if(getenv("LANG") && (strstr(getenv("LANG"), "zh_TW")||strstr(getenv("LANG"), "zh_HK")))
+ 		cur_inputmethod = HZgetInputMethod(input_method_big5);
+ 	else
+ 		cur_inputmethod = HZgetInputMethod(input_method_gb);

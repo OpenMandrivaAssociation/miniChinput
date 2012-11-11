@@ -1,0 +1,11 @@
+--- src/server/Makefile.in.link	2011-02-05 12:19:15.000000000 +0100
++++ src/server/Makefile.in	2011-02-05 12:20:09.000000000 +0100
+@@ -16,7 +16,7 @@
+ all: $(DLIB_PROG)
+ 
+ libimm_server.so: $(DLIB_OBJS)
+-	$(CC) $(DLIB_OBJS) -shared -o $(DLIB_PROG)
++	$(CC) $(DLIB_OBJS) -shared -o $(DLIB_PROG) -ldl -lstdc++
+ 
+ TLS_LibMain.o : TLS_LibMain.cpp
+ 	$(CC) $(CFLAGS) -DUNICON_LIB=\"$(prefix)$(imdir)\" -c TLS_LibMain.cpp -o TLS_LibMain.o

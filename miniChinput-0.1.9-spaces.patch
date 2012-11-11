@@ -1,0 +1,19 @@
+--- miniChinput-0.1.9/src/init.c_old	2003-09-03 15:28:33.000000000 +0200
++++ miniChinput-0.1.9/src/init.c	2003-09-03 15:39:34.000000000 +0200
+@@ -484,8 +484,15 @@
+         ptr = strchr(line, '=') + 1;                //search value
+ 	while(*ptr == ' ' || *ptr == '\t')ptr++;//skip spaces
+ 	ptr2 = ptr;
+-	while(*ptr2 && *ptr2 != ' ' && *ptr2 != '\t') ptr2++;
++	while(*ptr2 && *ptr2 != '\t') ptr2++;
+ 	*ptr2 = '\0';
++	// trim spaces at end of string
++	ptr2--;
++	if (*ptr2 && *ptr2 == ' ') {
++		while (ptr2 > ptr && *ptr2 && *ptr2 == ' ') ptr--;
++		ptr2++;
++		*ptr2 = '\0';
++	}
+         return ptr;
+ }
+ 

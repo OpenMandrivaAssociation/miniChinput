@@ -1,0 +1,234 @@
+diff -Naur miniChinput-0.1.9/src/all.h miniChinput_new/src/all.h
+--- miniChinput-0.1.9/src/all.h	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/all.h	2003-07-17 02:17:05.000000000 -0700
+@@ -216,7 +216,6 @@
+ void HZoverspotInputFlush (void);
+ void HZoverspotCandidateFlush (void);
+ void HZoverspotFlush (void);
+-void HZprocAutoHide (void);
+ /* From `server.c': */
+ void HZprocXIM (XKeyEvent *kev , char *buf , int *charcount );
+ void HZprocMessage (XClientMessageEvent *ev );
+diff -Naur miniChinput-0.1.9/src/chinput.h miniChinput_new/src/chinput.h
+--- miniChinput-0.1.9/src/chinput.h	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/chinput.h	2003-07-17 02:17:05.000000000 -0700
+@@ -173,7 +173,6 @@
+ 	char	gblocale[20];		//GB Locale Name
+ 	char	big5locale[20];		//Big5 Locale Name
+ 	int	dmode;			//ROOT,OVERSPOT,ONSPOT,OFFSPOT
+-	int	hmode;			//autohide inputbar in overspot style
+ 	int	cmode;			//choice window mode in onspot style
+ 	int	areamode;		//areamode in offspot style
+ 	int	showime;		//show im in inputbar in overspot style
+diff -Naur miniChinput-0.1.9/src/config.c miniChinput_new/src/config.c
+--- miniChinput-0.1.9/src/config.c	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/config.c	2003-07-17 02:17:05.000000000 -0700
+@@ -482,6 +482,7 @@
+ 	
+ 	if(dmode == HZSERVER_DMODE_OVERSPOT){
+ 		dmode = HZSERVER_DMODE_ROOT;
++	        IMM_ConfigInputArea(chinput_imm, width_inputbar);
+ 		XUnmapWindow(display, window2);
+ 		XResizeWindow(display, window1,
+ 			HZServer.hzIwin.width + HZServer.hzBwin.width,
+@@ -505,6 +506,7 @@
+ 
+ 	} else if(dmode == HZSERVER_DMODE_OFFSPOT) {
+ 		dmode = HZSERVER_DMODE_OVERSPOT;
++	        IMM_ConfigInputArea(chinput_imm, 200);
+ 		XUnmapWindow(display, window4);
+ 		XUnmapWindow(display, window5);
+ 		XUnmapWindow(display, window6);
+diff -Naur miniChinput-0.1.9/src/focus.c miniChinput_new/src/focus.c
+--- miniChinput-0.1.9/src/focus.c	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/focus.c	2003-07-17 02:17:05.000000000 -0700
+@@ -225,12 +225,3 @@
+ 	}
+ }
+ 
+-void HZprocAutoHide(void)
+-{
+-	if(hmode == HZSERVER_HMODE_AUTO)
+-		hmode = HZSERVER_HMODE_NO;
+-	else
+-		hmode = HZSERVER_HMODE_AUTO;
+-}
+-
+-
+diff -Naur miniChinput-0.1.9/src/globals.h miniChinput_new/src/globals.h
+--- miniChinput-0.1.9/src/globals.h	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/globals.h	2003-07-17 02:17:05.000000000 -0700
+@@ -39,7 +39,6 @@
+ WHERE Window  movingwin;		//moving window
+ WHERE int map_mode;			//mapped? altered by Control-Space
+ WHERE int dmode,saved_dmode;		//input mode
+-WHERE int hmode;			//auto-hide mode for overthespot
+ WHERE int cmode;			//choice window mode for onthespot
+ WHERE char input_method_gb[20];		//input method name for gb
+ WHERE char input_method_big5[20];	//input method name for big5
+diff -Naur miniChinput-0.1.9/src/init.c miniChinput_new/src/init.c
+--- miniChinput-0.1.9/src/init.c	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/init.c	2003-07-17 02:17:05.000000000 -0700
+@@ -456,7 +456,6 @@
+ 	index_ime = 0;		//ime list index
+ 	boxdrawn = False;
+ 	dmode = HZSERVER_DMODE_OVERSPOT;
+-	hmode = HZSERVER_HMODE_NO;
+ 	strcpy(input_method_gb, "ZNPY");
+ 	strcpy(input_method_big5, "PY");
+ 	strcpy(dict_path, IMDIR);
+@@ -552,10 +551,6 @@
+ 				flag_automode = False;
+ 			}
+ 		} else if(!mystrcmp(line, "chinput.hmode")){
+-			if(!strcmp(get_value(line), "AUTO"))
+-				hmode = HZSERVER_HMODE_AUTO;
+-			else
+-				hmode = HZSERVER_HMODE_NO;
+ 		} else if(!mystrcmp(line, "chinput.cmode")){
+ 			if(!strcmp(get_value(line), "AUTO"))
+ 				cmode = HZSERVER_CMODE_AUTO;
+diff -Naur miniChinput-0.1.9/src/server.c miniChinput_new/src/server.c
+--- miniChinput-0.1.9/src/server.c	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/server.c	2003-07-17 02:17:05.000000000 -0700
+@@ -289,7 +289,7 @@
+ 			return 2;
+ 		}
+ 	} else {
+-		return set_reply(c, buf);
++		return rt;
+ 	}
+ }
+ 
+diff -Naur miniChinput-0.1.9/src/XIM.c miniChinput_new/src/XIM.c
+--- miniChinput-0.1.9/src/XIM.c	2003-07-13 22:09:41.000000000 -0700
++++ miniChinput_new/src/XIM.c	2003-07-17 02:17:05.000000000 -0700
+@@ -28,18 +28,14 @@
+ #include "all.h"
+ 
+ //InputModule *inmd=&HZServer.cxtermInput.InputMd;
+-Boolean xim_use_trigger = False;    /* Static Event Flow is default */
+ Boolean xim_use_offkey = False;    /* Register OFF Key for Dynamic Event Flow */
+-Boolean xim_use_tcp = False;       /* Using TCP/IP Transport or not */
+-Boolean xim_use_local = False;     /* Using Unix domain Tranport or not */
+ long filter_mask = KeyPressMask;
+ //static XIMS this_xims;
+ 
+ char *imname = DEFAULT_IMNAME;
+-XIMStyles *input_styles, *styles2;
+-XIMTriggerKeys *on_keys, *trigger2;
+-XIMEncodings *encodings, *encoding2;
+-char transport[80];
++XIMStyles *input_styles;
++XIMTriggerKeys *on_keys;
++XIMEncodings *encodings;
+ 
+ /* Supported Inputstyles */
+ //Chinput now support all input styles. It will adjust the input style
+@@ -147,7 +143,7 @@
+ 
+ /* Trigger Keys List */
+ static XIMTriggerKey Trigger_Keys[] = {
+-    	{XK_space, ShiftMask, ShiftMask},
++    	{XK_space, ControlMask, ControlMask},
+     	{0L, 0L, 0L}
+ };
+ 
+@@ -222,10 +218,6 @@
+         XLookupString(kev, strbuf, STRBUFLEN, &keysym, NULL);
+ 
+         //control-space will act as control key
+-        if( (kev->state & ControlMask) && (kev->state & Mod1Mask) &&
+-		(keysym == XK_space) ) return True;
+-        if( (kev->state & ControlMask) && (kev->state & Mod1Mask) &&
+-		(keysym == XK_s || keysym == XK_S) ) return True;
+         if( (kev->state & ControlMask) && (keysym == XK_space) ) return True;
+         if( (kev->state & Mod1Mask) && (keysym == XK_space) ) return True;
+ 
+@@ -253,10 +245,7 @@
+         kev = (XKeyEvent*)&call_data->event;
+         XLookupString(kev, strbuf, STRBUFLEN, &keysym, NULL);
+ 
+-	if((kev->state & ControlMask) && (kev->state & Mod1Mask) &&
+-		(keysym == XK_space) ){
+-		HZprocAutoHide();
+-        } else if( (kev->state & ControlMask) && (keysym == XK_space) ){
++        if( (kev->state & ControlMask) && (keysym == XK_space) ){
+ 		HZprocToggleWindow();
+         } else if( ((kev->state & Mod1Mask) && (keysym == XK_space))||(keysym == XK_F3 && (kev->state & ShiftMask )) ){
+ 		HZprocSwitchMode();
+@@ -465,12 +454,7 @@
+ 		//hide window
+ 
+ 		if(dmode == HZSERVER_DMODE_OVERSPOT){
+-			if(hmode == HZSERVER_HMODE_AUTO){
+-				XUnmapWindow(display, window1);
+-				XUnmapWindow(display, window2);
+-			} else {
+ //				XUnmapWindow(display, window2);
+-			}
+ 		} else if(dmode == HZSERVER_DMODE_ONSPOT){
+ 			HZonspotClear();
+ 		}
+@@ -587,6 +571,7 @@
+ 	/* Here, the start of preediting is notified from IMlibrary, which
+ 	   is the only way to start preediting in case of Dynamic Event
+ 	   Flow, because ON key is mandatary for Dynamic Event Flow. */
++              HZprocToggleWindow();
+ 		return True;
+ 	} else if (xim_use_offkey && call_data->flag == 1) {    /* off key */
+ 	/* Here, the end of preediting is notified from the IMlibrary, which
+@@ -680,49 +665,22 @@
+     	encodings->count_encodings = sizeof(chEncodings)/sizeof(XIMEncoding)-1;
+     	encodings->supported_encodings = chEncodings;
+ 
+-    	if (xim_use_local) {
+-        	char hostname[64];
+-        	char *address = "/tmp/.ximsock";
+-        	gethostname(hostname, 64);
+-        	sprintf(transport, "local/%s:%s", hostname, address);
+-    	} else if (xim_use_tcp) {
+-        	char hostname[64];
+-        	int port_number = 9010;
+-        	gethostname(hostname, 64);
+-        	sprintf(transport, "tcp/%s:%d", hostname, port_number);
+-    	} else {
+-        	strcpy(transport, "X/");
+-    	}
+-
+ 	this_xims = IMOpenIM(display,
+ 		IMServerWindow, 	window1,	//input window
+ 		IMModifiers, 		"Xi18n",	//X11R6 protocol
+-		IMServerName, 		imname,		//XIM server name
++		IMServerName, 	imname,		//XIM server name
+ 		IMLocale, 		imlocale,	//XIM server locale
+-		IMServerTransport, 	transport,	//Comm. protocol
+-		IMInputStyles, 		input_styles,	//faked styles
++		IMServerTransport, 	"X/",	//Comm. protocol
++		IMInputStyles, 	input_styles,	//faked styles
+ 		IMEncodingList, 	encodings,
++		IMOnKeysList, 	on_keys,
+ 		IMProtocolHandler, 	ChinputProtoHandler,
+ 		IMFilterEventMask, 	filter_mask,
+ 		NULL);
+ 	if(this_xims == (XIMS)NULL){
+         	fprintf(stderr, "Can't Open Input Method Service:\n");
+         	fprintf(stderr, "\tInput Method Name :%s\n", imname);
+-        	fprintf(stderr, "\tTranport Address:%s\n", transport);
+         	return;
+ 	}
+-/*
+-	if(xim_use_trigger) {
+-        	if (xim_use_offkey)
+-			IMSetIMValues(this_xims,
+-				IMOnKeysList, 	on_keys,
+-				IMOffKeysList, 	on_keys,
+-				NULL);
+-		else
+-			IMSetIMValues(this_xims,
+-				IMOnKeysList, 	on_keys,
+-				NULL);
+-	}
+-*/
+ }
+ 
