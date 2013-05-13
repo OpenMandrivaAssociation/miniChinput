@@ -27,9 +27,9 @@ Patch7:	minichinput-fix-compile.patch
 Patch8: miniChinput-0.1.9-gcc45.patch
 Patch9: miniChinput-0.1.9-link.patch
 BuildRequires: imlib-devel
-BuildRequires: libx11-devel
-BuildRequires: libxft-devel
-BuildRequires: libxt-devel
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(xft)
+BuildRequires: pkgconfig(xt)
 Buildroot: %_tmppath/%name-%version-%release-root
 Conflicts: Chinput
 Obsoletes: Chinput
