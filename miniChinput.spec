@@ -1,6 +1,6 @@
 %define name miniChinput
 %define ver 0.1.9
-%define release %mkrel 7
+%define release  8
 
 
 Summary: A X Input Method Server for Chinese
@@ -30,7 +30,6 @@ BuildRequires: imlib-devel
 BuildRequires: pkgconfig(x11)
 BuildRequires: pkgconfig(xft)
 BuildRequires: pkgconfig(xt)
-Buildroot: %_tmppath/%name-%version-%release-root
 Conflicts: Chinput
 Obsoletes: Chinput
 
