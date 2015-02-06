@@ -1,6 +1,6 @@
 %define name miniChinput
 %define ver 0.1.9
-%define release  8
+%define release  9
 
 
 Summary: A X Input Method Server for Chinese
