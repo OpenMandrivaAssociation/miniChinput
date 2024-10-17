@@ -11,7 +11,7 @@ Release: %{release}
 License: GPL
 Group: System/Internationalization
 Requires: locales-zh
-URL: http://sourceforge.net/projects/minichinput
+URL: https://sourceforge.net/projects/minichinput
 Source: %{name}-0.1.9.tar.gz
 Patch0: %{name}-0.1.9-rxvt.patch
 # allow spaces invalue fields of config file (a lot of fonts have
