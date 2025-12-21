@@ -26,6 +26,11 @@ Patch6: miniChinput-0.1.9-oem_CN.patch
 Patch7:	minichinput-fix-compile.patch
 Patch8: miniChinput-0.1.9-gcc45.patch
 Patch9: miniChinput-0.1.9-link.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires: imlib-devel
 BuildRequires: pkgconfig(x11)
 BuildRequires: pkgconfig(xft)
